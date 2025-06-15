@@ -1,7 +1,6 @@
 package com.medilabo.model;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,29 +15,22 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "patient")
-public class Patient {
-	
+@Document(collection = "transmission")
+public class Transmission {
+
 	@Id
 	Long id;
 	
-	@NotNull
-	String prenom;
+	
+	Long medecinId;
+	Long patientId;
+	String nomMedecin;
+	String prenomMedecin;
 	
 	@NotNull
-	String nom;
+	LocalDateTime dateTransmission;
 	
 	@NotNull
-	Date dateNaissance;
+	String transmission;
 	
-	@NotNull
-	String genre;
-	
-	String adresse;
-	String telephone;
-	
-	List<Long> medecinIds;
-	
-	List<Long> historiqueIds;
-
 }

@@ -1,6 +1,5 @@
 package com.medilabo.model;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -16,29 +15,18 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "patient")
-public class Patient {
+@Document(collection = "medecin")
+public class Medecin {
 	
 	@Id
 	Long id;
 	
 	@NotNull
-	String prenom;
-	
-	@NotNull
 	String nom;
 	
 	@NotNull
-	Date dateNaissance;
+	String prenom;
 	
-	@NotNull
-	String genre;
-	
-	String adresse;
-	String telephone;
-	
-	List<Long> medecinIds;
-	
-	List<Long> historiqueIds;
+	List<Long> patientIds;
 
 }
