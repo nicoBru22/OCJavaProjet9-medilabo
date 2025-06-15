@@ -9,14 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.medilabo.model.Patient;
 import com.medilabo.service.IPatientService;
@@ -42,7 +42,7 @@ public class PatientController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
+	public ResponseEntity<Patient> getPatientById(@PathVariable String id) {
 	    Optional<Patient> patientOptional = patientService.getPatientById(id);
 
 	    if (patientOptional.isPresent()) {
@@ -52,16 +52,35 @@ public class PatientController {
 	    }
 	}
 	
-	@PostMapping("/add/validate")
-	public ResponseEntity<Patient> ajouterPatient(@Valid @RequestBody Patient patient) {
-		Patient patientAdded = patientService.addPatient(patient);
-		return ResponseEntity.ok().body(patient);
+	@GetMapping("/add")
+	public String getAddPatientPage(Model model) {
+		logger.info("Entrée dans controller /patient/add pour ajouter un patient (addPatientPage.html).");
+		model.addAttribute("patient", new Patient());
+		return "addPatientPage";
 	}
 	
-	@DeleteMapping("/delete/validate")
-	public void deletePatient(@Valid @RequestBody Patient patient) {
-		patientService.deletePatient(patient);
+	@PostMapping("/add/validate")
+	public String ajouterPatient(@Valid Patient patient, BindingResult result, Model model) {
+	    logger.info("Entrée dans POST /add/validate");
+	    logger.info("Patient reçu : {}", patient);
+
+	    if (result.hasErrors()) {
+	        logger.info("Erreur lors de la validation : {}", result.getAllErrors());
+	        return "addPatientPage";
+	    }
+
+	    patientService.addPatient(patient);
+	    return "redirect:/patient/liste";
 	}
+	
+    @PostMapping("/delete/{id}")
+    public String deletePatient(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
+        logger.info("Entrée dans POST /delete/{id} avec id={}", id);
+        patientService.deletePatient(id);
+        redirectAttributes.addFlashAttribute("info", "Suppression réussie !");
+        return "redirect:/patient/liste";
+    }
+
 	
 	@PutMapping("/update/validate")
 	public Patient updatePatient(@Valid @RequestBody Patient patient) {

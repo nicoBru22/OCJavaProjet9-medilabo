@@ -7,17 +7,38 @@
 	<body>
 	
 	    <h1>Liste des patients</h1>
+	    <p th:text="${info}"></p>
 	<table>
 		<thead>
 			<tr>
 				<th>Nom</th>
 				<th>Prénom</th>
+				<th>Date de Naissance</th>
+				<th>Genre</th>
+				<th>Adresse</th>
+				<th>Téléphone</th>
+				<th>Date de création</th>
+				<th>Date modification</th>
+				
+				
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:each="patient : ${patients}">
 				<td th:text="${patient.nom}"></td>
 				<td th:text="${patient.prenom}"></td>
+				<td th:text="${patient.dateNaissance}"></td>
+				<td th:text="${patient.genre}"></td>
+				<td th:text="${patient.adresse}"></td>
+				<td th:text="${patient.telephone}"></td>
+				<td th:text="${patient.dateCreation}"></td>
+				<td th:text="${patient.dateModification}"></td>
+	            <td>
+					<form th:action="@{/patient/delete/{id}(id=${patient.id})}" method="post">
+					    <button type="submit">Supprimer</button>
+					</form>
+
+	            </td>
 			</tr>
 			
 		

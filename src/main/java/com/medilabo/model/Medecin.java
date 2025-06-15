@@ -27,6 +27,9 @@ public class Medecin {
 	@NotNull
 	String prenom;
 	
+	@NotNull
+	String password;
+	
 	List<Long> patientIds;
 
 }

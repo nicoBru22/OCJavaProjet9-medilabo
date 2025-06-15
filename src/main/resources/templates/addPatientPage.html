@@ -7,20 +7,34 @@
 	<body>
 	
 	    <h1>Ajouter un nouveau patient</h1>
-	    <form>
-	    	<label>Nom</label>
-	    	<input>
-	    	<label>Prénom</label>
-	    	<input>
-	    	<label>Date de naissance</label>
-	    	<input>
-	    	<label>Adresse</label>
-	    	<input>
-	    	<label>Téléphone</label>
-	    	<input>
-	    	<button type="submit"></button>
 	    
-	    </form>
+	    
+<form th:action="@{/patient/add/validate}" th:object="${patient}" method="post">
+    <label>Nom</label>
+    <input type="text" th:field="*{nom}" required />
+
+    <label>Prénom</label>
+    <input type="text" th:field="*{prenom}" required />
+
+    <label>Date de naissance</label>
+    <input type="date" th:field="*{dateNaissance}" required />
+
+    <label>Genre</label>
+    <input type="text" th:field="*{genre}" required />
+
+    <label>Adresse</label>
+    <input type="text" th:field="*{adresse}" />
+
+    <label>Téléphone</label>
+    <input type="text" th:field="*{telephone}" />
+
+    <div th:if="${#fields.hasErrors('*')}">
+        <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+    </div>
+
+    <button type="submit">Ajouter</button>
+</form>
+
 	
 	</body>
 </html>

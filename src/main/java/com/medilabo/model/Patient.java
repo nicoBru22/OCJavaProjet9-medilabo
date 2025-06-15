@@ -1,6 +1,7 @@
 package com.medilabo.model;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -20,7 +21,7 @@ import lombok.Setter;
 public class Patient {
 	
 	@Id
-	Long id;
+	String id;
 	
 	@NotNull
 	String prenom;
@@ -29,13 +30,16 @@ public class Patient {
 	String nom;
 	
 	@NotNull
-	Date dateNaissance;
+	LocalDate dateNaissance;
 	
 	@NotNull
 	String genre;
 	
 	String adresse;
 	String telephone;
+	
+	LocalDateTime dateCreation;
+	LocalDateTime dateModification;
 	
 	List<Long> medecinIds;
 	

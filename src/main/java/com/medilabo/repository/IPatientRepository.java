@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.medilabo.model.Patient;
 
 @Repository
-public interface IPatientRepository extends MongoRepository<Patient, Long> {
+public interface IPatientRepository extends MongoRepository<Patient, String> {
 }

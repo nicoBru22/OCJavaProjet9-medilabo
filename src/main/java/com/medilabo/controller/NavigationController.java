@@ -1,6 +1,5 @@
 package com.medilabo.controller;
 
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,12 +18,6 @@ public class NavigationController {
 		logger.info("Entrée dans controller / pour afficher page d'accueil (home.html).");
 		model.addAttribute("test", "bienvenue sur la page d'accueil de MediLabo");
 		return "homePage";
-	}
-	
-	@GetMapping("/patient/add")
-	public String getAddPatientPage(Model model) {
-		logger.info("Entrée dans controller /patient/add pour ajouter un patient (addPatientPage.html).");
-		return "addPatientPage";
 	}
 
 }
