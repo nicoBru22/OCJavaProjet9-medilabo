@@ -37,7 +37,9 @@
 					<form th:action="@{/patient/delete/{id}(id=${patient.id})}" method="post">
 					    <button type="submit">Supprimer</button>
 					</form>
-
+					<form th:action="@{/patient/update/{id}(id=${patient.id})}" method="get">
+					    <button type="submit">Modifier</button>
+					</form>
 	            </td>
 			</tr>
 			

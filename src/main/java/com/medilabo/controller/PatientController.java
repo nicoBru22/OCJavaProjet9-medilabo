@@ -11,10 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -38,7 +37,7 @@ public class PatientController {
 		List<Patient> patientList = patientService.getAllPatient();
 		logger.info("liste des patients : {}", patientList);
 		model.addAttribute("patients", patientList);
-		return "patientListPage";
+		return "patient/patientListPage";
 	}
 	
 	@GetMapping("/{id}")
@@ -56,7 +55,7 @@ public class PatientController {
 	public String getAddPatientPage(Model model) {
 		logger.info("Entrée dans controller /patient/add pour ajouter un patient (addPatientPage.html).");
 		model.addAttribute("patient", new Patient());
-		return "addPatientPage";
+		return "patient/addPatientPage";
 	}
 	
 	@PostMapping("/add/validate")
@@ -66,7 +65,7 @@ public class PatientController {
 
 	    if (result.hasErrors()) {
 	        logger.info("Erreur lors de la validation : {}", result.getAllErrors());
-	        return "addPatientPage";
+	        return "patient/addPatientPage";
 	    }
 
 	    patientService.addPatient(patient);
@@ -81,10 +80,26 @@ public class PatientController {
         return "redirect:/patient/liste";
     }
 
+    @GetMapping("/update/{id}")
+    public String getUpdatePatientPage(@PathVariable("id") String id, Model model) {
+        Patient patient = patientService.getPatientById(id).get();
+        model.addAttribute("patient", patient);
+        return "patient/updatePatientPage";
+    }
+
 	
-	@PutMapping("/update/validate")
-	public Patient updatePatient(@Valid @RequestBody Patient patient) {
-		patientService.updatePatient(patient);
-		return patient;
-	}
+    @PostMapping("/update/validate")
+    public String updatePatient(@Valid @ModelAttribute("patient") Patient patient,
+                                BindingResult result,
+                                RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("erreur", "Erreur lors de la mise à jour.");
+            return "patient/updatePatientPage";
+        }
+        patientService.updatePatient(patient);
+        redirectAttributes.addFlashAttribute("message", "Patient mis à jour avec succès.");
+        return "redirect:/patient/liste";
+    }
+
 }
