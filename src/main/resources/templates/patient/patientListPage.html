@@ -2,11 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
 	    <meta charset="UTF-8">
-	    <title>Accueil</title>
+	    <title>Liste des patients</title>
 	</head>
 	<body>
 	
 	    <h1>Liste des patients</h1>
+	    <a href="/patient/add">Ajouter un nouveau patient</a>
 	    <p th:text="${info}"></p>
 	<table>
 		<thead>
@@ -39,6 +40,9 @@
 					</form>
 					<form th:action="@{/patient/update/{id}(id=${patient.id})}" method="get">
 					    <button type="submit">Modifier</button>
+					</form>
+					<form th:action="@{/patient/infos/{id}(id=${patient.id})}" method="get">
+					    <button type="submit">Informations</button>
 					</form>
 	            </td>
 			</tr>

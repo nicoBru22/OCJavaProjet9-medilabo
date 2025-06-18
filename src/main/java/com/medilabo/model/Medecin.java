@@ -19,7 +19,7 @@ import lombok.Setter;
 public class Medecin {
 	
 	@Id
-	Long id;
+	String id;
 	
 	@NotNull
 	String nom;

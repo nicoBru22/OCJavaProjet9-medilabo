@@ -1,21 +1,21 @@
 package com.medilabo.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.medilabo.model.Patient;
 import com.medilabo.service.IPatientService;
@@ -23,7 +23,7 @@ import com.medilabo.service.IPatientService;
 import jakarta.validation.Valid;
 
 @RequestMapping("/patient")
-@Controller
+@RestController
 public class PatientController {
 
 	private Logger logger = LogManager.getLogger();
@@ -31,75 +31,58 @@ public class PatientController {
 	@Autowired
 	private IPatientService patientService;
 	
-	@GetMapping("/liste")
-	public String getListePatient(Model model) {
-		logger.info("Entrée dans controller /patient/list");
-		List<Patient> patientList = patientService.getAllPatient();
-		logger.info("liste des patients : {}", patientList);
-		model.addAttribute("patients", patientList);
-		return "patient/patientListPage";
+    @GetMapping("/list")
+    public List<Patient> getAllPatients() {
+        List<Patient> patientList = patientService.getAllPatient();
+        return patientList;
+    }
+	
+	@GetMapping("/infos/{id}")
+	public Patient getPatientById(@PathVariable String id) {
+	    Patient patient = patientService.getPatientById(id);
+        return patient;
 	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<Patient> getPatientById(@PathVariable String id) {
-	    Optional<Patient> patientOptional = patientService.getPatientById(id);
-
-	    if (patientOptional.isPresent()) {
-	        return ResponseEntity.ok(patientOptional.get());
-	    } else {
-	        return ResponseEntity.notFound().build();
-	    }
-	}
-	
-	@GetMapping("/add")
-	public String getAddPatientPage(Model model) {
-		logger.info("Entrée dans controller /patient/add pour ajouter un patient (addPatientPage.html).");
-		model.addAttribute("patient", new Patient());
-		return "patient/addPatientPage";
-	}
-	
-	@PostMapping("/add/validate")
-	public String ajouterPatient(@Valid Patient patient, BindingResult result, Model model) {
-	    logger.info("Entrée dans POST /add/validate");
+	@PostMapping("/add")
+	public ResponseEntity<?> ajouterPatientApi(@RequestBody @Valid Patient patient, BindingResult result) {
+	    logger.info("Entrée dans POST patient/add");
 	    logger.info("Patient reçu : {}", patient);
 
 	    if (result.hasErrors()) {
-	        logger.info("Erreur lors de la validation : {}", result.getAllErrors());
-	        return "patient/addPatientPage";
+	    	logger.error("une erreur lors de l ajout du patient.");
+	        result.getAllErrors().forEach(error -> logger.error(error.toString()));
+	        return ResponseEntity.badRequest().body(result.getAllErrors());
 	    }
 
-	    patientService.addPatient(patient);
-	    return "redirect:/patient/liste";
+	    Patient savedPatient = patientService.addPatient(patient);
+	    return ResponseEntity.status(HttpStatus.CREATED).body(savedPatient);
+	}
+
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<Void> deletePatient(@PathVariable("id") String id) {
+	    logger.info("Entrée dans DELETE /delete/{} ", id);
+	    patientService.deletePatient(id);
+	    return ResponseEntity.noContent().build(); // 204 No Content
 	}
 	
-    @PostMapping("/delete/{id}")
-    public String deletePatient(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
-        logger.info("Entrée dans POST /delete/{id} avec id={}", id);
-        patientService.deletePatient(id);
-        redirectAttributes.addFlashAttribute("info", "Suppression réussie !");
-        return "redirect:/patient/liste";
-    }
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> updatePatient(
+	        @PathVariable("id") String id,
+	        @Valid @RequestBody Patient patient,
+	        BindingResult result) {
 
-    @GetMapping("/update/{id}")
-    public String getUpdatePatientPage(@PathVariable("id") String id, Model model) {
-        Patient patient = patientService.getPatientById(id).get();
-        model.addAttribute("patient", patient);
-        return "patient/updatePatientPage";
-    }
+	    if (result.hasErrors()) {
+	        logger.error("Erreur lors de la mise à jour du patient : {}", result.getAllErrors());
+	        return ResponseEntity.badRequest().body(result.getAllErrors());
+	    }
 
-	
-    @PostMapping("/update/validate")
-    public String updatePatient(@Valid @ModelAttribute("patient") Patient patient,
-                                BindingResult result,
-                                RedirectAttributes redirectAttributes) {
+	    Patient updatedPatient = patientService.updatePatient(patient).get();
 
-        if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("erreur", "Erreur lors de la mise à jour.");
-            return "patient/updatePatientPage";
-        }
-        patientService.updatePatient(patient);
-        redirectAttributes.addFlashAttribute("message", "Patient mis à jour avec succès.");
-        return "redirect:/patient/liste";
-    }
+	    logger.info("Mise à jour réussie du patient avec id {}", id);
+
+	    return ResponseEntity.ok(updatedPatient); // Renvoie le patient mis à jour en JSON
+	}
+
 
 }

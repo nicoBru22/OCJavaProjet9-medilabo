@@ -10,9 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.medilabo.model.Medecin;
 import com.medilabo.repository.IMedecinRepository;
+import com.medilabo.service.IMedecinService;
 
 @Service
-public class MedecinServiceImpl {
+public class MedecinServiceImpl implements IMedecinService {
 	
 	private final Logger logger = LogManager.getLogger();
 	
@@ -26,7 +27,7 @@ public class MedecinServiceImpl {
 		return medecinList;
 	}
 	
-	public Medecin getMedecinById(Long id) {
+	public Medecin getMedecinById(String id) {
 		logger.info("Entrée dans le service pour récupérer un médecin.");
 		Optional<Medecin> medecin = medecinRepository.findById(id);
 		logger.info("Le medecin trouvé : {}", medecin);
@@ -39,13 +40,14 @@ public class MedecinServiceImpl {
 		Medecin medecin = new Medecin();
 		medecin.setNom(newMedecin.getNom());
 		medecin.setPrenom(newMedecin.getPrenom());
+		medecin.setPassword(newMedecin.getPassword());
 		medecinRepository.save(medecin);
 		
 		logger.info("Le médecin {} a été ajouté.", medecin);
 		return medecin;
 	}
 	
-	public void deleteMedecin(Long id) {
+	public void deleteMedecin(String id) {
 		logger.info("Entrée dans le service pour supprimer le médecin avec l'id : {}", id);
 		
 		medecinRepository.deleteById(id);
@@ -53,7 +55,7 @@ public class MedecinServiceImpl {
 		logger.info("Le médecin avec l'id {} a été supprimé.", id);
 	}
 	
-	public Medecin updateMedecin(Long id, Medecin updateMedecin) {
+	public Medecin updateMedecin(String id, Medecin updateMedecin) {
 		logger.info("Entrée dans le service pour supprimer le médecin avec l'id : {}", id);	
 	
 		Optional<Medecin> medecinToUpdate = medecinRepository.findById(id);

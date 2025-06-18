@@ -26,8 +26,8 @@ public class PatientServiceImpl implements IPatientService{
 		return listePatient;
 	}
 	
-	public Optional<Patient> getPatientById(String id) {
-		Optional<Patient> patient = patientRepository.findById(id);
+	public Patient getPatientById(String id) {
+		Patient patient = patientRepository.findById(id).get();
 		return patient;
 	}
 	

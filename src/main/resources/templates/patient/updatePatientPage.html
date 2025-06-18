@@ -6,6 +6,7 @@
 </head>
 <body>
     <h1>Page de mise à jour du patient</h1>
+        <a href="/patient/liste">revenir à la liste des patients</a>
 
 		<form th:action="@{/patient/update/validate}" th:object="${patient}" method="post">
     <input type="hidden" th:field="*{id}" />
@@ -20,7 +21,11 @@
         <input type="date" th:field="*{dateNaissance}" />
 
         <label>Genre</label>
-        <input type="text" th:field="*{genre}" />
+        <select th:field="*{genre}">
+		    <option value="">-- Sélectionner --</option>
+		    <option value="Masculin">Masculin</option>
+		    <option value="Féminin">Féminin</option>
+		</select>
 
         <label>Adresse</label>
         <input type="text" th:field="*{adresse}" />

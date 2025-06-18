@@ -6,8 +6,8 @@ import com.medilabo.model.Medecin;
 
 public interface IMedecinService {
 	List<Medecin> getAllMedecin();
-	Medecin getMedecinById(Long id);
+	Medecin getMedecinById(String id);
 	Medecin addMedecin(Medecin newMedecin);
-	void deleteMedecin(Long id);
-	Medecin updateMedecin(Long id, Medecin updateMedecin);
+	void deleteMedecin(String id);
+	Medecin updateMedecin(String id, Medecin updateMedecin);
 }

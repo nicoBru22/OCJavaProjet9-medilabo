@@ -8,6 +8,8 @@
 	
 	    <h1>Ajouter un nouveau patient</h1>
 	    
+        <a href="/patient/liste">revenir à la liste des patients</a>
+	    
 	    
 <form th:action="@{/patient/add/validate}" th:object="${patient}" method="post">
     <label>Nom</label>
@@ -20,7 +22,11 @@
     <input type="date" th:field="*{dateNaissance}" required />
 
     <label>Genre</label>
-    <input type="text" th:field="*{genre}" required />
+	<select th:field="*{genre}">
+	    <option value="">-- Sélectionner --</option>
+	    <option value="Masculin">Masculin</option>
+	    <option value="Féminin">Féminin</option>
+	</select>
 
     <label>Adresse</label>
     <input type="text" th:field="*{adresse}" />
