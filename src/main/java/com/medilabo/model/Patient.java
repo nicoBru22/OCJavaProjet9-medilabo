@@ -41,8 +41,8 @@ public class Patient {
 	LocalDateTime dateCreation;
 	LocalDateTime dateModification;
 	
-	List<Long> medecinIds;
+	List<String> medecinIds;
 	
-	List<Long> historiqueIds;
+	List<String> transmissionIds;
 
 }

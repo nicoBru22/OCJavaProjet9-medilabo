@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import com.medilabo.model.Medecin;
 import com.medilabo.model.Patient;
 import com.medilabo.service.IPatientService;
 
@@ -82,6 +83,12 @@ public class PatientController {
 	    logger.info("Mise à jour réussie du patient avec id {}", id);
 
 	    return ResponseEntity.ok(updatedPatient); // Renvoie le patient mis à jour en JSON
+	}
+	
+	@GetMapping("/medecinByPatient")
+	public ResponseEntity<List<Medecin>> getMedecinsByPatient(String id) {
+		List<Medecin> medecinList = patientService.getMedecinsByPatient(id);
+		return ResponseEntity.status(HttpStatus.OK).body(medecinList) ;
 	}
 
 

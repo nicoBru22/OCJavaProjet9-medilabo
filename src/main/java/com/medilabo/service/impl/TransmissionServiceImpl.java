@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.medilabo.model.Transmission;
 import com.medilabo.repository.ITransmissionRepository;
+import com.medilabo.service.ITransmissionService;
 
 @Service
-public class TransmissionServiceImpl {
+public class TransmissionServiceImpl implements ITransmissionService {
 	
 	private Logger logger = LogManager.getLogger();
 	
@@ -27,7 +28,7 @@ public class TransmissionServiceImpl {
 		return transmissionList;
 	}
 	
-	public Transmission getTransmission(Long id) {
+	public Transmission getTransmission(String id) {
 		logger.info("");
 		Optional<Transmission> transmisson = transmissionRepository.findById(id);
 		logger.info("");
@@ -52,11 +53,11 @@ public class TransmissionServiceImpl {
 	    return transmission;
 	}
 	
-	public void deleteTransmission(Long id) {
+	public void deleteTransmission(String id) {
 		transmissionRepository.deleteById(id);
 	}
 	
-	public Transmission updateTransmission(Long id, Transmission updatedTransmission) {
+	public Transmission updateTransmission(String id, Transmission updatedTransmission) {
 	    logger.info("Mise à jour de la transmission avec l'id : {}", id);
 
 	    Transmission existing = transmissionRepository.findById(id)
@@ -71,6 +72,18 @@ public class TransmissionServiceImpl {
 	    logger.info("Transmission mise à jour avec succès : {}", saved.getId());
 
 	    return saved;
+	}
+	
+	public List<Transmission> getAllTransmissionsByPatientId(String patientId) {
+		List<Transmission> listTransmissionPatient = transmissionRepository.findAllByPatientId(patientId);
+		
+		return listTransmissionPatient;
+	}
+	
+	public List<Transmission> getAllTransmissionsByMedecinId(String medecinId) {
+		List<Transmission> listTransmissionMedecin = transmissionRepository.findAllByMedecinId(medecinId);
+
+		return listTransmissionMedecin;
 	}
 
 

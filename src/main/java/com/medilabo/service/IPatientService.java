@@ -3,6 +3,7 @@ package com.medilabo.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.medilabo.model.Medecin;
 import com.medilabo.model.Patient;
 
 public interface IPatientService {
@@ -11,4 +12,5 @@ public interface IPatientService {
 	void deletePatient(String id);
 	Patient addPatient(Patient patient);
 	Optional<Patient> updatePatient(Patient patient);
+	List<Medecin> getMedecinsByPatient(String id);
 }

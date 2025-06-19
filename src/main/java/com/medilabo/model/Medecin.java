@@ -30,6 +30,6 @@ public class Medecin {
 	@NotNull
 	String password;
 	
-	List<Long> patientIds;
+	List<String> patientIds;
 
 }

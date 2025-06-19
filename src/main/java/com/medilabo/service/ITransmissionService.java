@@ -6,9 +6,12 @@ import com.medilabo.model.Transmission;
 
 public interface ITransmissionService {
 	List<Transmission> getAllTransmissions();
-	Transmission getTransmission(Long id);
+	Transmission getTransmission(String id);
 	Transmission addTransmission(Transmission newTransmission);
-	public void deleteTransmission(Long id);
-	Transmission updateTransmission(Long id, Transmission updatedTransmission);
+	public void deleteTransmission(String id);
+	Transmission updateTransmission(String id, Transmission updatedTransmission);
+	List<Transmission> getAllTransmissionsByMedecinId(String medecinId);
+	List<Transmission> getAllTransmissionsByPatientId(String patientId);
+
 
 }

@@ -19,15 +19,14 @@ import lombok.Setter;
 public class Transmission {
 
 	@Id
-	Long id;
+	String id;
 	
+	String medecinId;
+	String patientId;
 	
-	Long medecinId;
-	Long patientId;
 	String nomMedecin;
 	String prenomMedecin;
 	
-	@NotNull
 	LocalDateTime dateTransmission;
 	
 	@NotNull
