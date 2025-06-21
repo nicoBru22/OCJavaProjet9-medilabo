@@ -6,12 +6,14 @@ import com.medilabo.model.Transmission;
 import com.medilabo.service.ITransmissionService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +32,17 @@ public class TransmissionController {
 	private ITransmissionService transmissionService;
 
 	@PostMapping("/add")
-	public ResponseEntity<Transmission> addTransmission(@Valid @RequestBody Transmission newTransmission) {
+	public ResponseEntity<?> addTransmission(@Valid @RequestBody Transmission newTransmission, BindingResult result) {
 		logger.info("Requête reçue pour ajouter une transmission : {}", newTransmission);
+		
+	    if (result.hasErrors()) {
+	        String errors = result.getFieldErrors()
+	            .stream()
+	            .map(e -> e.getField() + ": " + e.getDefaultMessage())
+	            .collect(Collectors.joining(", "));
+	        logger.warn("Validation échouée : {}", errors);
+	        return ResponseEntity.badRequest().body(errors);
+	    }
 
 		try {
 			Transmission transmission = transmissionService.addTransmission(newTransmission);
@@ -44,19 +55,19 @@ public class TransmissionController {
 	}
 
 	@GetMapping("/getTransmissionsOfPatient")
-	public ResponseEntity<List<Transmission>> getAllTransmissionOfPatient(@RequestParam String patientid) {
-		logger.info("Requête reçue pour récupérer les transmissions du patient avec l'ID : {}", patientid);
+	public ResponseEntity<List<Transmission>> getAllTransmissionOfPatient(@RequestParam String patientId) {
+		logger.info("Requête reçue pour récupérer les transmissions du patient avec l'ID : {}", patientId);
 
 		try {
-			List<Transmission> transmissionList = transmissionService.getAllTransmissionsByPatientId(patientid);
+			List<Transmission> transmissionList = transmissionService.getAllTransmissionsByPatientId(patientId);
 			if (transmissionList.isEmpty()) {
-				logger.warn("Aucune transmission trouvée pour le patient avec l'ID : {}", patientid);
+				logger.warn("Aucune transmission trouvée pour le patient avec l'ID : {}", patientId);
 			} else {
-				logger.info("{} transmissions trouvées pour le patient {}", transmissionList.size(), patientid);
+				logger.info("{} transmissions trouvées pour le patient {}", transmissionList.size(), patientId);
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(transmissionList);
 		} catch (Exception e) {
-			logger.error("Erreur lors de la récupération des transmissions du patient : {}", patientid, e);
+			logger.error("Erreur lors de la récupération des transmissions du patient : {}", patientId, e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}

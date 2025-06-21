@@ -23,16 +23,16 @@ public class Patient {
 	@Id
 	String id;
 	
-	@NotNull
+	@NotNull(message = "Le prénom est obligatoire.")
 	String prenom;
 	
-	@NotNull
+	@NotNull(message = "Le nom du patient est obligatoire.")
 	String nom;
 	
-	@NotNull
+	@NotNull(message = "La date de naissance est obligatoire.")
 	LocalDate dateNaissance;
 	
-	@NotNull
+	@NotNull(message = "Le genre est obligatoire.")
 	String genre;
 	
 	String adresse;

@@ -24,12 +24,16 @@ public class Transmission {
 	String medecinId;
 	String patientId;
 	
-	String nomMedecin;
-	String prenomMedecin;
-	
 	LocalDateTime dateTransmission;
 	
-	@NotNull
-	String transmission;
+	@NotNull(message = "Le nom du médecin est obligatoire.")
+	private String nomMedecin;
+
+	@NotNull(message = "Le prenom du médecin est obligatoire.")
+	String prenomMedecin;
+
+	
+	@NotNull(message = "La transmission ne peut pas être vide")
+	private String transmission;
 	
 }
