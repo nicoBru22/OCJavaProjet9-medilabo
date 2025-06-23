@@ -1,7 +1,6 @@
 package com.medilabo.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,9 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.medilabo.model.Medecin;
 import com.medilabo.model.Patient;
-import com.medilabo.repository.IMedecinRepository;
 import com.medilabo.repository.IPatientRepository;
 import com.medilabo.service.IPatientService;
 
@@ -23,9 +20,6 @@ public class PatientServiceImpl implements IPatientService{
 	
 	@Autowired
 	private IPatientRepository patientRepository;
-	
-	@Autowired
-	private IMedecinRepository medecinRepository;
 
 	public List<Patient> getAllPatient() {
 		List<Patient> listePatient = patientRepository.findAll();
@@ -71,20 +65,6 @@ public class PatientServiceImpl implements IPatientService{
 		} else {
 			throw new RuntimeException("Le patient n'existe pas avec l'Id " + patient.getId());
 		}
-		
-	}
-	
-	public List<Medecin> getMedecinsByPatient(String id) {
-		Patient patient = patientRepository.findById(id).get();
-		
-		List<String> medecinsIds = patient.getMedecinIds();
-		
-	    if (medecinsIds == null || medecinsIds.isEmpty()) {
-	        return Collections.emptyList(); // Aucun médecin référent
-	    }
-
-	    List<Medecin> medecinList = medecinRepository.findAllById(medecinsIds);
-	    return medecinList;
 		
 	}
 }
