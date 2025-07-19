@@ -1,5 +1,6 @@
 package com.medilabo.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -32,9 +34,45 @@ public class PatientController {
 	private IPatientService patientService;
 	
     @GetMapping("/list")
-    public List<Patient> getAllPatients() {
+    public ResponseEntity<List<Patient>> getAllPatients() {
+    	logger.info("Entrée dans le controller getAllPatients.");
         List<Patient> patientList = patientService.getAllPatient();
-        return patientList;
+        logger.info("La liste des patients : {}", patientList);
+        return ResponseEntity.ok(patientList);
+    }
+    
+    @GetMapping("/infos/{id}/age")
+    public int getAgePatient(@PathVariable String id) {
+        logger.info("Tentative de récupération de l'âge pour le patient avec l'ID : {}", id);
+        Patient patient = patientService.getPatientById(id);
+
+        if (patient == null) {
+            logger.warn("Patient non trouvé avec l'ID : {}", id);
+            // Renvoie un 404 si le patient n'est pas trouvé
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Patient with ID " + id + " not found.");
+        }
+
+        LocalDate dateNaissance = patient.getDateNaissance();
+
+        // AJOUT DE CETTE VÉRIFICATION :
+        if (dateNaissance == null) {
+            logger.error("Date de naissance non trouvée (null) pour le patient avec l'ID : {}. Impossible de calculer l'âge.", id);
+            // Il est important de renvoyer une erreur appropriée si la donnée est manquante.
+            // Un HttpStatus.BAD_REQUEST (400) ou HttpStatus.UNPROCESSABLE_ENTITY (422) peut être plus pertinent.
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Date of birth is missing for patient with ID: " + id);
+        }
+
+        try {
+            logger.info("Calcul de l'âge pour le patient {} avec date de naissance : {}", id, dateNaissance);
+            // La méthode agePatient sera appelée ici avec une dateNaissance non-null
+            int agePatient = patientService.agePatient(dateNaissance);
+            logger.info("Âge du patient {} calculé : {}", id, agePatient);
+            return agePatient;
+        } catch (Exception e) {
+            logger.error("Erreur inattendue lors du calcul de l'âge pour le patient {} : {}", id, e.getMessage(), e);
+            // Renvoie une 500 en cas d'erreur de logique interne si la date n'est pas null
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error calculating age for patient with ID: " + id, e);
+        }
     }
 	
 	@GetMapping("/infos/{id}")

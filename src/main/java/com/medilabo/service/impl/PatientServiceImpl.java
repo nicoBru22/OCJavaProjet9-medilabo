@@ -1,6 +1,8 @@
 package com.medilabo.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +19,11 @@ import com.medilabo.service.IPatientService;
 public class PatientServiceImpl implements IPatientService{
 	
 	private Logger logger = LogManager.getLogger();
+
 	
 	@Autowired
 	private IPatientRepository patientRepository;
-
+	
 	public List<Patient> getAllPatient() {
 		List<Patient> listePatient = patientRepository.findAll();
 		return listePatient;
@@ -65,6 +68,14 @@ public class PatientServiceImpl implements IPatientService{
 		} else {
 			throw new RuntimeException("Le patient n'existe pas avec l'Id " + patient.getId());
 		}
+		
+	}
+	
+	public int agePatient(LocalDate dateNaissance) {
+		LocalDate aujourhui = LocalDate.now();
+		Period period = Period.between(dateNaissance, aujourhui);
+		int agePatient = period.getYears();
+		return agePatient;
 		
 	}
 }
